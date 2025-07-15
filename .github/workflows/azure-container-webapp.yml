@@ -1,31 +1,35 @@
-name: Deploy minimal Python app to Azure Web App
+name: Build and deploy Python app to Azure Web App - smartinvoicepro
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
-      contents: read
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Login to Azure
-        uses: azure/login@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID }}
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Zip app for deployment
+        run: zip -r app.zip . -x '*.git*' '*.venv*' '*.github*'
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'your-azure-app-name'
-          slot-name: 'Production'
-          package: .
+          app-name: 'smartinvoicepro-2'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          package: app.zip
