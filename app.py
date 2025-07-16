@@ -1,14 +1,9 @@
-from flask import Flask
-
+from flask import Flask, render_template
 app = Flask(__name__)
 
 @app.route('/')
-def home():
-    return 'Hello from Flask on Azure App Service!'
+def index():
+    return render_template("index.html") 
 
-@app.route('/api/hello')
-def api_hello():
-    return {'message': 'Hello, Azure!'}
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+if __name__=='__main__':
+    app.run(debug=True)

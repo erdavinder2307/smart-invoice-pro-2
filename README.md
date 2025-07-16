@@ -1,1 +1,0 @@
-# smart-invoice-pro-2
