@@ -1,5 +1,9 @@
 from flask import Flask, render_template
-app = Flask(__name__)
+
+from smart_invoice_pro.app import create_app
+
+# app = Flask(__name__)
+app = create_app()
 
 @app.route('/')
 def index():
